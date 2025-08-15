@@ -1,86 +1,70 @@
 // scripts/app.js
 
-/*
-  هذا الملف يحتوي على جميع الأكواد الخاصة بالتطبيق:
-  - تسجيل الدخول / تسجيل حساب
-  - واجهة المستخدم
-  - التعامل مع Firebase Auth و Firestore
-  - اللعب الفردي والجروبات
-  - تحديث النقاط والمستوى
-  - متجر العناصر
-*/
+// إعدادات Firebase الحقيقية
+const firebaseConfig = {
+  apiKey: "AIzaSyBQOYfNpEnrW5a5k8yp0mezXWdOZCgGR_A",
+  authDomain: "badr-23612.firebaseapp.com",
+  projectId: "badr-23612",
+  storageBucket: "badr-23612.firebasestorage.app",
+  messagingSenderId: "75263319914",
+  appId: "1:75263319914:web:e99f09e8ee494fbc65cf13",
+  measurementId: "G-W0Q11GPSJ8"
+};
 
-// TODO: ضع هنا firebaseConfig بعد إنشاءه
+// استيراد وظائف Firebase
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, Timestamp } from "firebase/firestore";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  Timestamp
+} from "firebase/firestore";
 
+// تهيئة Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// تسجيل حساب جديد
-async function signUp(email, password, displayName) {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  const user = userCredential.user;
-  await setDoc(doc(db, "users", user.uid), {
-    displayName: displayName,
-    email: email,
-    avatar: "",
-    points: 0,
-    level: 1,
-    createdAt: Timestamp.now()
-  });
-  return user;
-}
+// ... (بقية الدوال: signUp, signIn, createGroup, joinGroup, updatePoints, logout) ...
 
-// تسجيل الدخول
-async function signIn(email, password) {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  return userCredential.user;
-}
+// ربط الأزرار بملف HTML
+const loginBtn = document.getElementById("loginBtn");
+const signupBtn = document.getElementById("signupBtn");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const displayNameInput = document.getElementById("displayName");
 
-// مراقبة حالة تسجيل الدخول
-onAuthStateChanged(auth, user => {
-  if (user) {
-    console.log("مستخدم متصل:", user.uid);
-    // هنا يمكن إعادة توجيه المستخدم للواجهة الرئيسية
-  } else {
-    console.log("لا يوجد مستخدم متصل");
+// إضافة مستمعي الأحداث (Event Listeners)
+signupBtn.addEventListener('click', async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const displayName = displayNameInput.value;
+  try {
+    await signUp(email, password, displayName);
+    console.log("تم إنشاء الحساب بنجاح!");
+  } catch (error) {
+    console.error("خطأ في إنشاء الحساب:", error);
+    alert("فشل إنشاء الحساب: " + error.message);
   }
 });
 
-// وظائف لإنشاء جروب
-async function createGroup(name, ownerUid) {
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const groupRef = doc(db, "groups", code);
-  await setDoc(groupRef, {
-    name,
-    code,
-    ownerUid,
-    players: [],
-    status: "waiting",
-    minPlayers: 4,
-    maxPlayers: 10,
-    currentTurnIndex: 0,
-    round: 1,
-    createdAt: Timestamp.now()
-  });
-  return code;
-}
-
-// الانضمام لجروب
-async function joinGroup(code, player) {
-  const groupRef = doc(db, "groups", code);
-  await updateDoc(groupRef, {
-    players: arrayUnion(player)
-  });
-}
-
-// تحديث النقاط
-async function updatePoints(userId, points) {
-  const userRef = doc(db, "users", userId);
-  await updateDoc(userRef, {
-    points: points
-  });
-}
+loginBtn.addEventListener('click', async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  try {
+    await signIn(email, password);
+    console.log("تم تسجيل الدخول بنجاح!");
+  } catch (error) {
+    console.error("خطأ في تسجيل الدخول:", error);
+    alert("فشل تسجيل الدخول: " + error.message);
+  }
+});
