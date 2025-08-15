@@ -1,0 +1,30 @@
+<!-- index.html -->
+<!-- صفحة البداية للتطبيق -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>من هو؟ – لعبة معرفة الأصدقاء</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <div id="app">
+    <h1>مرحبًا بك في لعبة "من هو؟" 🎯</h1>
+    <div id="auth-section">
+      <input type="text" id="displayName" placeholder="اسم المستخدم" />
+      <input type="email" id="email" placeholder="البريد الإلكتروني" />
+      <input type="password" id="password" placeholder="كلمة المرور" />
+      <button id="signupBtn">إنشاء حساب</button>
+      <button id="loginBtn">تسجيل الدخول</button>
+    </div>
+    <div id="main-menu" style="display:none;">
+      <p>نقاطك: <span id="points">0</span></p>
+      <button id="playSolo">🎮 إلعب لوحدك</button>
+      <button id="createGroup">👥 إنشاء جروب جديد</button>
+      <button id="joinGroup">🔑 الدخول برمز جروب</button>
+    </div>
+  </div>
+  <script type="module" src="scripts/app.js"></script>
+</body>
+</html>
